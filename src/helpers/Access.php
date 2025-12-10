@@ -10,8 +10,12 @@ class Access
     {
         //$route[0] - is the route, $route[1] - is the associated parameters
         $routes = static::createPartRoutes($route);
+        $params = [];
+        if (isset($route[1])) {
+            $params = $route[1];
+        }
         foreach ($routes as $routeVariant) {
-            if (Yii::$app->user->can($routeVariant, $route[1])) {
+            if (Yii::$app->user->can($routeVariant, $params)) {
                 return true;
             }
         }

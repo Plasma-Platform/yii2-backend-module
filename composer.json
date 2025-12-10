@@ -1,13 +1,18 @@
 {
-  "name": "indigerd/yii2-backend-module",
+  "name": "plasma-platform/yii2-backend-module",
   "description": "Yii2 advanced module for backend area.",
   "keywords": ["yii2", "cms", "module", "admin panel", "backend"],
   "type": "module",
   "license": "MIT",
+  "version": "0.5.8",
   "authors": [
     {
       "name": "Alexander Stepanenko",
       "email": "alex.stepanenko@gmail.com"
+    },
+    {
+      "name": "Pavlo Titkov",
+      "email": "ptitkov@gmail.com"
     }
   ],
   "autoload": {
