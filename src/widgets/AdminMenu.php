@@ -8,6 +8,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Menu;
 use indigerd\adminmodule\AdminMenuInterface;
+use indigerd\adminmodule\helpers\Access;
 
 class AdminMenu extends Menu
 {
@@ -89,11 +90,11 @@ class AdminMenu extends Menu
                 $items = array_merge($items, $module->getAdminMenu());
             }
         }
-        foreach ($items as $key=>$item) {
+        foreach ($items as $key => $item) {
             if (isset($item['group'])) {
                 $group = $item['group'];
                 unset($item['group']);
-                foreach ($c['items'] as $k=>$i) {
+                foreach ($c['items'] as $k => $i) {
                     if (isset($i['items']) and $i['label'] == $group) {
                         $c['items'][$k]['items'][] = $item;
                         unset($items[$key]);
@@ -103,7 +104,7 @@ class AdminMenu extends Menu
             if (isset($item['section'])) {
                 $section = $item['section'];
                 unset($item['section']);
-                foreach ($c['items'] as $k=>$i) {
+                foreach ($c['items'] as $k => $i) {
                     if (
                         isset($i['options']['class']) and
                         $i['options']['class'] == 'header' and
@@ -126,6 +127,27 @@ class AdminMenu extends Menu
         /* maybe implement insert before and after ????? */
         //print_r($c);exit;
         $c['items'] = array_merge($items, $c['items']);
+        foreach ($c['items'] as $k => $i) {
+            if (!isset($i['visible'])) {
+                $visible = false;
+                if (!empty($i['items'])) {
+                    foreach ($i['items'] as $childKey => $child) {
+                        if (isset($child['url']) and is_array($child['url']) and !isset($child['visible'])) {
+                            $childVisible = (Yii::$app->user->can('administrator') or Access::checkPermission($child['url']));
+                            if ($childVisible) {
+                                $visible = true;
+                            }
+                            $c['items'][$k]['items'][$childKey]['visible'] = $childVisible;
+                        }
+                    }
+                } elseif (isset($i['url']) and is_array($i['url'])) {
+                    $visible = (Yii::$app->user->can('administrator') or Access::checkPermission($i['url']));
+                } else {
+                    $visible = true;
+                }
+                $c['items'][$k]['visible'] = $visible;
+            }
+        }
         return parent::widget($c);
     }
 }

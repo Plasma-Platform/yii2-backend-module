@@ -15,7 +15,7 @@ class AdminAwareModule extends MigrationAwareModule implements AdminMenuInterfac
 
     protected $modes = ['backend', 'frontend', 'api', 'console'];
 
-    public $adminAssetBundles = [];
+    public $assetBundles = [];
 
     public $adminMenu = [];
 
